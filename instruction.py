@@ -5,39 +5,61 @@ def printer(times, capacity):
 
 instruction: str = sys.stdin.readline().rstrip()
 
-phrase = []
 def number_of_times(phrase: str)-> int:
     """Возвращает целое число"""
-    times: str =''
-    times_check: bool = True
+    times: str = ''
+    times_check = True
     for symbol in phrase:
         if times_check:
             try:
                 times += str(int(symbol))
             except ValueError:
-                times_check = False
+                if symbol == '[':
+                    times_check = False
+                pass
     if len(times) > 0:
         return int(times)
-    return 1
+    else:
+        return 1
 
-def opener(phrase):
+def starter(phrase):
+    """Удаляет все, кроме незашифроманного начала"""
+    clear_phrase = ''
+    for symbol in phrase:
+        try:
+            check = int(symbol)
+            break
+        except ValueError:
+            clear_phrase += symbol
+    return clear_phrase
+
+def opener(phrase, times=1):
+    """Рекурсиная открывашка для символов внутри []"""
     check = False
-    symbols =''
+    symbols = ''
     count = 0
-    second_count = 0
     for i in range(len(phrase)):
         if phrase[i] == ']':
             count -= 1
             if count == 0:
                 check = False
-                if second_count > 1:
-                    opener(symbols)
+                break
         if check:
             symbols += phrase[i]
         if phrase[i] == '[':
             count += 1
-            second_count += 1
             check = True
     
-    print(symbols)
-opener(instruction)
+    if '[' in symbols:
+        return (starter(symbols) + opener(symbols, number_of_times(symbols))) * times
+    else:
+        return symbols * times
+
+def connecting(prhase):
+    result = starter(prhase) + opener(prhase, number_of_times(prhase))
+
+    return 
+
+
+
+print(connecting(instruction))
